@@ -17,7 +17,7 @@ class Day2(input: List<String>) {
 
         fun isValidPart1() : Boolean {
             val charCount = password.filter { it == char }.count()
-            return charCount >= first && charCount <= second
+            return charCount in first..second
         }
         fun isValidPart2() : Boolean {
             return (password[first-1] == char) xor (password[second-1] == char)
