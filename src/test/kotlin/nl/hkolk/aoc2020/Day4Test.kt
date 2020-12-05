@@ -8,7 +8,7 @@ import java.util.*
 import kotlin.test.assertTrue
 
 
-@DisplayName("Day 3")
+@DisplayName("Day 4")
 class Day4Test {
 
     val testInput = Resources.resourceAsList("day4_test.txt")
