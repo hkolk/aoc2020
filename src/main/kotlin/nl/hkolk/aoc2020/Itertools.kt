@@ -77,7 +77,7 @@ fun String.sliding(size: Int): Sequence<String> = sequence {
  * @return The cartesian prodcut of the range
  */
 fun CharRange.cartProd(n: Int): Sequence<List<Char>> {
-    val ranges = repeat(n).toList().toTypedArray()
+    val ranges = repeated(n).toList().toTypedArray()
     return cartProd(*(ranges))
 }
 
@@ -89,7 +89,7 @@ fun CharRange.cartProd(n: Int): Sequence<List<Char>> {
  * @return The cartesian prodcut of the range
  */
 fun IntRange.cartProd(n: Int): Sequence<List<Int>> {
-    val ranges = repeat(n).toList().toTypedArray()
+    val ranges = repeated(n).toList().toTypedArray()
     return cartProd(*(ranges))
 }
 
@@ -101,7 +101,7 @@ fun IntRange.cartProd(n: Int): Sequence<List<Int>> {
  * @return The cartesian prodcut of the range
  */
 fun LongRange.cartProd(n: Int): Sequence<List<Long>> {
-    val ranges = repeat(n).toList().toTypedArray()
+    val ranges = repeated(n).toList().toTypedArray()
     return cartProd(*(ranges))
 }
 
@@ -111,9 +111,10 @@ fun LongRange.cartProd(n: Int): Sequence<List<Long>> {
  *
  * @param times How often the object is repeated. null means its repeated indefinitely
  */
-fun <T : Any> T.repeat(times: Int? = null): Sequence<T> = sequence {
+
+fun <T : Any> T.repeated(times: Int? = null): Sequence<T> = sequence {
     var count = 0
-    while (times == null || count++ < times) yield(this@repeat)
+    while (times == null || count++ < times) yield(this@repeated)
 }
 
 /**
@@ -177,7 +178,7 @@ fun <T : Any> List<T>.combinations(r: Int, replace: Boolean = false): Sequence<L
     val n = count()
     if (r > n) return sequenceOf()
     return sequence {
-        var indices = if (replace) 0.repeat(r).toMutableList() else (0 until r).toMutableList()
+        var indices = if (replace) 0.repeated(r).toMutableList() else (0 until r).toMutableList()
         while (true) {
             yield(indices.map { this@combinations[it] })
             var i = r - 1
@@ -190,7 +191,7 @@ fun <T : Any> List<T>.combinations(r: Int, replace: Boolean = false): Sequence<L
             }
             if (i < 0) break
             when (replace) {
-                true -> indices = (indices.take(i) + (indices[i] + 1).repeat(r - i)).toMutableList()
+                true -> indices = (indices.take(i) + (indices[i] + 1).repeated(r - i)).toMutableList()
                 false -> {
                     indices[i] += 1
                     (i + 1 until r).forEach { indices[it] = indices[it - 1] + 1 }
@@ -273,7 +274,7 @@ fun <T : Comparable<T>> Iterable<T>.permutations(k: Int = this.count()): Sequenc
     val n = elements.count()
     return if (k == n) sequence {
         // https://en.wikipedia.org/wiki/Heap%27s_algorithm
-        val indicies = 0.repeat(n).toMutableList()
+        val indicies = 0.repeated(n).toMutableList()
         yield(elements)
         var i = 0
         while (i < n) {
