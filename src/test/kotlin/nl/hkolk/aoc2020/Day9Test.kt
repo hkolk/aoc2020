@@ -5,11 +5,11 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@DisplayName("Day 8")
-class Day8Test {
+@DisplayName("Day 9")
+class Day9Test {
 
-    val testInput = Resources.resourceAsList("day8_test.txt")
-    val realInput = Resources.resourceAsList("day8.txt")
+    val testInput = Resources.resourceAsList("day9_test.txt")
+    val realInput = Resources.resourceAsList("day9.txt")
 
     @Nested
     @DisplayName("Part 1")
@@ -17,13 +17,13 @@ class Day8Test {
 
         @Test
         fun `Matches Example`() {
-            val answer = Day8(testInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(5)
+            val answer = Day9(testInput, 5).solvePart1()
+            Assertions.assertThat(answer).isEqualTo(127)
         }
         @Test
         fun `Actual Answer`() {
-            val answer = Day8(realInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(1654)
+            val answer = Day9(realInput).solvePart1()
+            Assertions.assertThat(answer).isEqualTo(15353384)
         }
     }
     @Nested
@@ -31,12 +31,12 @@ class Day8Test {
     inner class Part2 {
         @Test
         fun `Matches Example`() {
-            val answer = Day8(testInput).solvePart2()
-            Assertions.assertThat(answer).isEqualTo(8)
+            val answer = Day9(testInput, 5).solvePart2()
+            Assertions.assertThat(answer).isEqualTo(62)
         }
         @Test
         fun `Actual Answer`() {
-            val answer = Day8(realInput).solvePart2()
+            val answer = Day9(realInput).solvePart2()
             Assertions.assertThat(answer).isEqualTo(833)
         }
     }
