@@ -5,11 +5,11 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@DisplayName("Day 10")
-class Day10Test {
+@DisplayName("Day 11")
+class Day11Test {
 
-    val testInput = Resources.resourceAsList("day10_test.txt")
-    val realInput = Resources.resourceAsList("day10.txt")
+    val testInput = Resources.resourceAsList("day11_test.txt")
+    val realInput = Resources.resourceAsList("day11.txt")
 
     @Nested
     @DisplayName("Part 1")
@@ -17,13 +17,13 @@ class Day10Test {
 
         @Test
         fun `Matches Example`() {
-            val answer = Day10(testInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(120)
+            val answer = Day11(testInput).solvePart1()
+            Assertions.assertThat(answer).isEqualTo(37)
         }
         @Test
         fun `Actual Answer`() {
-            val answer = Day10(realInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(2040)
+            val answer = Day11(realInput).solvePart1()
+            Assertions.assertThat(answer).isEqualTo(2292)
         }
     }
     @Nested
@@ -31,12 +31,12 @@ class Day10Test {
     inner class Part2 {
         @Test
         fun `Matches Example`() {
-            val answer = Day10(testInput).solvePart2()
+            val answer = Day11(testInput).solvePart2()
             Assertions.assertThat(answer).isEqualTo(19208)
         }
         @Test
         fun `Actual Answer`() {
-            val answer = Day10(realInput).solvePart2()
+            val answer = Day11(realInput).solvePart2()
             Assertions.assertThat(answer).isEqualTo(28346956187648)
         }
     }
