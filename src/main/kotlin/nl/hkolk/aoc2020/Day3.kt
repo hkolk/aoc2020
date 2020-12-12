@@ -13,8 +13,6 @@ class Day3(val input: List<String>) {
     }
 
     class AocMap(input: List<String>) {
-        data class Point2D(val x:Int, val y:Int)
-
         val map = mutableMapOf<Point2D, Tile>()
         var maxX = 0;
         var maxY = 0;
@@ -48,7 +46,7 @@ class Day3(val input: List<String>) {
         var x = 0
         var trees = 0
         for( y in 0..aocMap.maxY step down ) {
-            val tile = aocMap.map[AocMap.Point2D(x % (aocMap.maxX+1), y)]
+            val tile = aocMap.map[Point2D(x % (aocMap.maxX+1), y)]
             if(tile == Tile.Tree) trees += 1
             x += right
         }

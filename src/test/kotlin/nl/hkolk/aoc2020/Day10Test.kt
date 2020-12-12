@@ -18,7 +18,7 @@ class Day10Test {
         @Test
         fun `Matches Example`() {
             val answer = Day10(testInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(120)
+            Assertions.assertThat(answer).isEqualTo(220)
         }
         @Test
         fun `Actual Answer`() {

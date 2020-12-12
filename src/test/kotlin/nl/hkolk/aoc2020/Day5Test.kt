@@ -20,10 +20,10 @@ class Day5Test {
     inner class Part1 {
         @Test
         fun `Matches Example`() {
-            assertThat(Day5(testInput).parseBoardingPass("FBFBBFFRLR")).isEqualTo(357)
-            assertThat(Day5(testInput).parseBoardingPass("BFFFBBFRRR")).isEqualTo(567)
-            assertThat(Day5(testInput).parseBoardingPass("FFFBBBFRRR")).isEqualTo(119)
-            assertThat(Day5(testInput).parseBoardingPass("BBFFBBFRLL")).isEqualTo(820)
+            assertThat(Day5(testInput).parseBoardingPass("FBFBBFFRLR").seatid).isEqualTo(357)
+            assertThat(Day5(testInput).parseBoardingPass("BFFFBBFRRR").seatid).isEqualTo(567)
+            assertThat(Day5(testInput).parseBoardingPass("FFFBBBFRRR").seatid).isEqualTo(119)
+            assertThat(Day5(testInput).parseBoardingPass("BBFFBBFRLL").seatid).isEqualTo(820)
             assertThat(Day5(testInput).solvePart1()).isEqualTo(820)
         }
         @Test
