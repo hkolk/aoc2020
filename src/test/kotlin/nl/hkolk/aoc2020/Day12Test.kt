@@ -32,12 +32,12 @@ class Day12Test {
         @Test
         fun `Matches Example`() {
             val answer = Day12(testInput).solvePart2()
-            Assertions.assertThat(answer).isEqualTo(26)
+            Assertions.assertThat(answer).isEqualTo(286)
         }
         @Test
         fun `Actual Answer`() {
             val answer = Day12(realInput).solvePart2()
-            Assertions.assertThat(answer).isEqualTo(2085)
+            Assertions.assertThat(answer).isEqualTo(38693)
         }
     }
 }

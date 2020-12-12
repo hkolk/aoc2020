@@ -8,10 +8,10 @@ class Day12(val input: List<String>) {
 
     fun Point2D.newLocation(id: Char, amount: Int): Point2D {
         return when (id) {
-            'N' -> Point2D(this.x + amount, this.y)
-            'S' -> Point2D(this.x - amount, this.y)
-            'E' -> Point2D(this.x, this.y + amount)
-            'W' -> Point2D(this.x, this.y - amount)
+            'E' -> Point2D(this.x + amount, this.y)
+            'W' -> Point2D(this.x - amount, this.y)
+            'N' -> Point2D(this.x, this.y + amount)
+            'S' -> Point2D(this.x, this.y - amount)
             else -> throw IllegalArgumentException("$id could not be mapped")
         }
     }
@@ -28,9 +28,9 @@ class Day12(val input: List<String>) {
     fun solvePart1(): Int {
         var loc = Point2D(0,0)
         var facing = 90
-        println("Location: $loc, facing: $facing")
+        //println("Location: $loc, facing: $facing")
         for(dir in directions) {
-            println("Direction: $dir")
+            //println("Direction: $dir")
             when(dir.first) {
                 'N', 'S', 'E', 'W' -> loc = loc.newLocation(dir.first, dir.second)
                 'R' -> facing = (facing + dir.second) % 360
@@ -43,25 +43,25 @@ class Day12(val input: List<String>) {
 
                 }
             }
-            println("Location: $loc, facing: $facing")
+            //println("Location: $loc, facing: $facing")
         }
-        return loc.x.absoluteValue + loc.y.absoluteValue
+        return loc.manhattan()
     }
     fun solvePart2(): Int {
         var loc = Point2D(0,0)
         var waypoint = Point2D(10, 1)
 
-        println("Location: $loc, waypoint: $waypoint")
+        //println("Location: $loc, waypoint: $waypoint")
         for(dir in directions) {
-            println("Direction: $dir")
+            //println("Direction: $dir")
             when(dir.first) {
                 'N', 'S', 'E', 'W' -> waypoint = waypoint.newLocation(dir.first, dir.second)
                 'R' -> waypoint = waypoint.rotate(dir.second)
                 'L' -> waypoint = waypoint.rotate(360 - dir.second)
                 'F' -> loc = Point2D(loc.x + (waypoint.x * dir.second), loc.y + (waypoint.y * dir.second))
             }
-            println("Location: $loc, waypoint: $waypoint")
+            //println("Location: $loc, waypoint: $waypoint")
         }
-        return loc.x.absoluteValue + loc.y.absoluteValue
+        return loc.manhattan()
     }
 }
