@@ -23,7 +23,7 @@ class Day11Test {
         @Test
         fun `Actual Answer`() {
             val answer = Day11(realInput).solvePart1()
-            Assertions.assertThat(answer).isEqualTo(2292)
+            Assertions.assertThat(answer).isEqualTo(2281)
         }
     }
     @Nested
