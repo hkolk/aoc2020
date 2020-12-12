@@ -8,11 +8,21 @@ class Day11(input: List<String>) {
     }
     data class Point2D(val x:Int, val y:Int) {
         fun adjacent(): Sequence<Point2D> = sequence {
-            for (adjX in x - 1..x + 1) {
-                for (adjY in y - 1..y + 1) {
-                    if(adjY != y || adjX != x) yield(Point2D(adjX, adjY))
-                }
-            }
+            DIRECTIONMAPPERS.map { yield(it(this@Point2D)) }
+        }
+        companion object {
+            val NORTH: (Point2D) -> Point2D = {Point2D(it.x+1, it.y) }
+            val NORTHEAST: (Point2D) -> Point2D = {Point2D(it.x+1, it.y+1) }
+            val EAST: (Point2D) -> Point2D = {Point2D(it.x, it.y+1) }
+            val SOUTHEAST: (Point2D) -> Point2D = {Point2D(it.x-1, it.y+1) }
+            val SOUTH: (Point2D) -> Point2D = {Point2D(it.x-1, it.y) }
+            val SOUTHWEST: (Point2D) -> Point2D = {Point2D(it.x-1, it.y-1) }
+            val WEST: (Point2D) -> Point2D = {Point2D(it.x, it.y-1) }
+            val NORTHWEST: (Point2D) -> Point2D = {Point2D(it.x+1, it.y-1) }
+
+            val DIRECTIONMAPPERS: List<(Point2D) -> Point2D> = listOf(
+                NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
+            )
         }
     }
 
@@ -39,17 +49,8 @@ class Day11(input: List<String>) {
     }
 
     fun Map<Point2D, SpaceType>.findSightlinesOccupied(curLoc: Point2D): Int {
-        val transformers: List<(Point2D) -> Point2D> = listOf(
-            {Point2D(it.x-1, it.y + 1)},
-            {Point2D(it.x-1, it.y) },
-            {Point2D(it.x-1,  it.y - 1)},
-            {Point2D(it.x, it.y + 1)},
-            {Point2D(it.x,  it.y - 1)},
-            {Point2D(it.x+1, it.y + 1)},
-            {Point2D(it.x+1, it.y) },
-            {Point2D(it.x+1,  it.y - 1)},
-        )
-        return transformers.map { findOccupied(curLoc, it) }.count { it }
+
+        return Point2D.DIRECTIONMAPPERS.map { findOccupied(curLoc, it) }.count { it }
     }
 
     fun Map<Point2D, SpaceType>.updateMapPart1(): Map<Point2D, SpaceType> {
