@@ -8,20 +8,11 @@ class Day12(val input: List<String>) {
 
     fun Point2D.newLocation(id: Char, amount: Int): Point2D {
         return when (id) {
-            'E' -> Point2D(this.x + amount, this.y)
-            'W' -> Point2D(this.x - amount, this.y)
-            'N' -> Point2D(this.x, this.y + amount)
-            'S' -> Point2D(this.x, this.y - amount)
+            'E' -> move(Point2D.EAST, amount)
+            'W' -> move(Point2D.WEST, amount)
+            'N' -> move(Point2D.NORTH, amount)
+            'S' -> move(Point2D.SOUTH, amount)
             else -> throw IllegalArgumentException("$id could not be mapped")
-        }
-    }
-
-    fun Point2D.rotate(degrees:Int): Point2D {
-        return when(degrees) {
-            90  -> Point2D(y, -x)
-            270 -> Point2D(-y, x)
-            180 -> Point2D(-x, -y)
-            else -> Point2D(x, y)
         }
     }
 
