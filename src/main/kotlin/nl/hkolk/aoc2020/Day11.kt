@@ -27,17 +27,31 @@ class Day11(input: List<String>) {
             }
         }.toMap()
 
-    /*
-    fun Map<Point2D, Boolean>.findSeat(curLoc: Point2D, transform: (Point2D) -> Point2D): Point2D {
+
+    fun Map<Point2D, SpaceType>.findOccupied(curLoc: Point2D, transform: (Point2D) -> Point2D): Boolean {
         val newLoc = transform(curLoc)
         when(get(newLoc)) {
-            true :
+            SpaceType.OpenSpace -> return findOccupied(newLoc, transform)
+            SpaceType.Empty -> return false
+            SpaceType.Occupied -> return true
         }
-
-        findSeat()
+        return false
     }
 
-     */
+    fun Map<Point2D, SpaceType>.findSightlinesOccupied(curLoc: Point2D): Int {
+        val transformers: List<(Point2D) -> Point2D> = listOf(
+            {Point2D(it.x-1, it.y + 1)},
+            {Point2D(it.x-1, it.y) },
+            {Point2D(it.x-1,  it.y - 1)},
+            {Point2D(it.x, it.y + 1)},
+            {Point2D(it.x,  it.y - 1)},
+            {Point2D(it.x+1, it.y + 1)},
+            {Point2D(it.x+1, it.y) },
+            {Point2D(it.x+1,  it.y - 1)},
+        )
+        return transformers.map { findOccupied(curLoc, it) }.count { it }
+    }
+
     fun Map<Point2D, SpaceType>.updateMapPart1(): Map<Point2D, SpaceType> {
         return mapNotNull{ entry ->
             if(entry.value == SpaceType.OpenSpace) {
@@ -53,20 +67,24 @@ class Day11(input: List<String>) {
         }.toMap()
     }
 
-    /*
+
     // sightlines, and tolerance of 5 seats
-    fun Map<Point2D, SpaceType>.updateMapPart2(): Map<Point2D, Boolean> {
+    fun Map<Point2D, SpaceType>.updateMapPart2(): Map<Point2D, SpaceType> {
         return mapNotNull{ entry ->
-            val occupied = entry.key.adjacent().mapNotNull{ this[it] }.count { it }
-            when(occupied) {
-                0 -> Pair(entry.key, true)
-                in 5..Int.MAX_VALUE -> Pair(entry.key, false)
-                else -> Pair(entry.key, entry.value)
+            if(entry.value == SpaceType.OpenSpace) {
+                Pair(entry.key, entry.value)
+            } else {
+                val occupied = findSightlinesOccupied(entry.key)
+                //if(entry.key == Point2D(2, 0)) println("Status: ${entry.value} Occupied: $occupied")
+                when (occupied) {
+                    0 -> Pair(entry.key, SpaceType.Occupied)
+                    in 5..Int.MAX_VALUE -> Pair(entry.key, SpaceType.Empty)
+                    else -> Pair(entry.key, entry.value)
+                }
             }
         }.toMap()
     }
 
-     */
 
 
     fun solvePart1(): Int {
@@ -81,17 +99,17 @@ class Day11(input: List<String>) {
         throw IllegalStateException("Ran out of loops")
     }
     fun solvePart2(): Int {
-        /*
         var map = initialMap
+
         for(step in 0..1000) {
             val newmap = map.updateMapPart2()
+            //println(newmap.count { it.value == SpaceType.Occupied })
             if(newmap.hashCode() == map.hashCode()) {
-                return newmap.count { it.value }
+                return newmap.count { it.value == SpaceType.Occupied }
             }
             map = newmap
         }
 
-         */
         throw IllegalStateException("Ran out of loops")
     }
 }
