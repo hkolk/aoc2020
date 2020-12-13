@@ -5,7 +5,7 @@ import kotlin.math.absoluteValue
 
 data class Point2D(val x:Int, val y:Int) {
     fun adjacent(): Sequence<Point2D> = sequence {
-        DIRECTIONMAPPERS.map { yield(it(this@Point2D)) }
+        DIRECTIONS.map { yield(it(this@Point2D)) }
     }
 
     fun manhattan(): Int {
@@ -36,7 +36,7 @@ data class Point2D(val x:Int, val y:Int) {
         val WEST: (Point2D) -> Point2D =         { Point2D(x = it.x - 1,  y = it.y      ) }
         val NORTHWEST: (Point2D) -> Point2D =    { Point2D(x = it.x - 1,  y = it.y + 1  ) }
 
-        val DIRECTIONMAPPERS: List<(Point2D) -> Point2D> = listOf(
+        val DIRECTIONS: List<(Point2D) -> Point2D> = listOf(
             NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
         )
     }

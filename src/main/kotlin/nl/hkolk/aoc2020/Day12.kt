@@ -49,7 +49,7 @@ class Day12(val input: List<String>) {
                 'N', 'S', 'E', 'W' -> waypoint = waypoint.newLocation(dir.first, dir.second)
                 'R' -> waypoint = waypoint.rotate(dir.second)
                 'L' -> waypoint = waypoint.rotate(360 - dir.second)
-                'F' -> loc = Point2D(loc.x + (waypoint.x * dir.second), loc.y + (waypoint.y * dir.second))
+                'F' -> loc = loc.move({Point2D(it.x + waypoint.x, it.y+waypoint.y)}, dir.second)
             }
             //println("Location: $loc, waypoint: $waypoint")
         }

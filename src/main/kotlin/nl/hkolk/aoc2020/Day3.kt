@@ -14,8 +14,8 @@ class Day3(val input: List<String>) {
 
     class AocMap(input: List<String>) {
         val map = mutableMapOf<Point2D, Tile>()
-        var maxX = 0;
-        var maxY = 0;
+        var maxX = 0
+        var maxY = 0
 
         init {
             input.forEachIndexed { y, row ->

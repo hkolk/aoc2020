@@ -31,7 +31,7 @@ class Day11(input: List<String>) {
 
     fun Map<Point2D, SpaceType>.findSightlinesOccupied(curLoc: Point2D): Int {
 
-        return Point2D.DIRECTIONMAPPERS.map { findOccupied(curLoc, it) }.count { it }
+        return Point2D.DIRECTIONS.map { findOccupied(curLoc, it) }.count { it }
     }
 
     fun Map<Point2D, SpaceType>.updateMapPart1(): Map<Point2D, SpaceType> {
