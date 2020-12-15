@@ -28,14 +28,18 @@ class Day14(val input: List<String>) {
         val memory = mutableMapOf<Int, Long> ()
         for(line in input) {
             val parts = line.split("=").map { it.trim() }
-            if(parts[0] == "mask") {
-                mask = parts[1]
-            } else if(parts[0].startsWith("mem")) {
-                val register = parts[0].filter { it in '0'..'9' }.toInt()
-                memory[register] = applyBitmask(mask, parts[1].toLong())
-                //println("Register $register now contains ${memory[register]}")
-            } else {
-                throw IllegalStateException("Cannot parse line $line")
+            when {
+                parts[0] == "mask" -> {
+                    mask = parts[1]
+                }
+                parts[0].startsWith("mem") -> {
+                    val register = parts[0].filter { it in '0'..'9' }.toInt()
+                    memory[register] = applyBitmask(mask, parts[1].toLong())
+                    //println("Register $register now contains ${memory[register]}")
+                }
+                else -> {
+                    throw IllegalStateException("Cannot parse line $line")
+                }
             }
         }
         return memory.values.sum()
