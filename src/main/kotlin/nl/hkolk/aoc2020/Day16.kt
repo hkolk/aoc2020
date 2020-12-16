@@ -27,16 +27,7 @@ class Day16(input: List<String>) {
             }
             return false
         }
-
-        fun validate(ticket: List<Int>): Int {
-            var errors = 0
-            for(value in ticket) {
-                if(!match(value)) {
-                    errors += value
-                }
-            }
-            return errors
-        }
+        fun match(value: List<Int>): Boolean = value.none { !match(it) }
 
         companion object {
             fun fromLine(line: String): Validation {
@@ -48,6 +39,17 @@ class Day16(input: List<String>) {
                 return Validation(name, ranges)
             }
         }
+    }
+    fun List<Validation>.validate(ticket: List<Int>): Pair<Boolean, Int> {
+        var errors = 0
+        var valid = true
+        for (value in ticket) {
+            if(none { it.match(value) }) {
+                errors += value
+                valid = false
+            }
+        }
+        return Pair(valid, errors)
     }
 
     val validations: List<Validation>
@@ -64,25 +66,63 @@ class Day16(input: List<String>) {
             line.split(",").map { it.toIntOrNull() ?: throw IllegalArgumentException("$it is not an integer") }
         }
         validTickets = tickets.filter { ticket ->
-            validations.map { validation -> validation.validate(ticket) }.sum() == 0
+            validations.validate(ticket).first
         }
     }
 
     fun solvePart1(): Int {
-        println(tickets)
-        println(validations)
+        //println(tickets)
+        //println(validations)
         var ret = 0
         for(ticket in tickets) {
-            for(value in ticket) {
-                if(validations.map { it.match(value) }.filter { it }.isEmpty()) {
-                    ret += value
-                    println("Invalid: $value")
-                }
-            }
+            ret += validations.validate(ticket).second
         }
         return ret
     }
-    fun solvePart2(): Int {
-        TODO()
+
+    fun List<List<Int>>.print() {
+        for(line in this) {
+            for(item in line) {
+                print(item.toString().padStart(5))
+            }
+            println()
+        }
+    }
+    fun solvePart2(startsWith: String = ""): Long {
+        val fields: List<MutableList<Int>> = (validTickets[1].indices).map { mutableListOf() }
+        validTickets.forEach { list ->
+            list.forEachIndexed { x, value ->
+                fields[x].add(value)
+            }
+        }
+        val indices = mutableMapOf<String, Int>()
+
+        val potentialIndices = fields.mapIndexed { index, field ->
+            Pair(index, validations.mapNotNull { if(it.match(field)) { it.name } else { null }})
+        }.toMap()
+
+        //potentialIndices.forEach{println("${it.key}: ${it.value}")}
+
+        for(i in 1 .. validations.size) {
+            potentialIndices.filter { it.value.size == i }.forEach { (key, value) ->
+                value.forEach {
+                    if(indices[it] == null && !indices.containsValue(key)) {
+                        indices[it] = key
+                    }
+                }
+            }
+        }
+        /*
+        indices.entries.associate{(k,v)-> v to k}.toSortedMap().forEach{println("${it.key} = ${it.value}")}
+        validations.filter { !indices.containsKey(it.name) }.forEach { missing ->
+            println("Missing: $missing.name")
+            potentialIndices.filter { potential -> potential.value.contains(missing.name) }.forEach{println("Potential $it")}
+        }
+
+        println(indices)
+        */
+        return indices.keys.filter { it.startsWith(startsWith) }.map {
+            myTicket[indices[it]!!]
+        }.fold(1L) {acc, it -> acc * it}
     }
 }

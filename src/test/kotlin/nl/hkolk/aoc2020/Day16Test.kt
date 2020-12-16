@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test
 class Day16Test {
 
     val testInput = Resources.resourceAsList("day16_test.txt")
+    val testInput2 = Resources.resourceAsList("day16_test2.txt")
+
     val realInput = Resources.resourceAsList("day16.txt")
 
     @Nested
@@ -31,13 +33,13 @@ class Day16Test {
     inner class Part2 {
         @Test
         fun `Matches Example`() {
-            val answer = Day16(testInput).solvePart2()
-            Assertions.assertThat(answer).isEqualTo(286)
+            val answer = Day16(testInput2).solvePart2()
+            Assertions.assertThat(answer).isEqualTo(1716)
         }
         @Test
         fun `Actual Answer`() {
-            val answer = Day16(realInput).solvePart2()
-            Assertions.assertThat(answer).isEqualTo(38693)
+            val answer = Day16(realInput).solvePart2("departure")
+            Assertions.assertThat(answer).isEqualTo(1289178686687)
         }
     }
 }
