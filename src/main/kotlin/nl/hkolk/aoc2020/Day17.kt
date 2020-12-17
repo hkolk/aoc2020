@@ -4,14 +4,9 @@ class Day17(val input: List<String>) {
 
     data class HyperPoint(val coords: List<Int>) {
         fun adjacent(): List<HyperPoint> {
-            val mutators = explore(coords.size, -1..1, listOf())
-            val neighbours = mutableListOf<HyperPoint>()
-
-            for(mutator in mutators) {
-                neighbours.add(HyperPoint(coords.zip(mutator) { it, other -> it + other }))
+            return explore(coords.size, -1..1, listOf()).map { mutator ->
+                HyperPoint(coords.zip(mutator) { it, other -> it + other })
             }
-            //neighbours.forEachIndexed{ index, coords -> println("NeighbourId: $index, coords: $coords")}
-            return neighbours
         }
 
         private fun explore(depth: Int, values: IntRange, accu: List<Int>): List<List<Int>> {
@@ -59,7 +54,7 @@ class Day17(val input: List<String>) {
                     }
                 }
             }
-            println("After step $step: ${newActiveSpace.size}")
+            //println("After step $step: ${newActiveSpace.size}")
             activeSpace = newActiveSpace
         }
         return activeSpace.size
