@@ -1,36 +1,52 @@
 package nl.hkolk.aoc2020
 
-class Day17(input: List<String>) {
+class Day17(val input: List<String>) {
 
-    data class Point3D(val x:Int, val y:Int, val z:Int) {
-        fun adjacent(): Sequence<Point3D> = sequence {
-            for(newX in x-1 .. x+1) {
-                for(newY in y-1..y+1) {
-                    for(newZ in z-1..z+1) {
-                        if(newX != x || newY != y || newZ != z) {
-                            yield(Point3D(newX, newY, newZ))
-                        }
-                    }
+    data class HyperPoint(val coords: List<Int>) {
+        fun adjacent(): List<HyperPoint> {
+            val mutators = explore(coords.size, -1..1, listOf())
+            val neighbours = mutableListOf<HyperPoint>()
+
+            for(mutator in mutators) {
+                neighbours.add(HyperPoint(coords.zip(mutator) { it, other -> it + other }))
+            }
+            //neighbours.forEachIndexed{ index, coords -> println("NeighbourId: $index, coords: $coords")}
+            return neighbours
+        }
+
+        private fun explore(depth: Int, values: IntRange, accu: List<Int>): List<List<Int>> {
+            return if(depth == 0) {
+                if(!accu.none{it != 0}) {
+                    listOf(accu)
+                } else {
+                    listOf()
                 }
+            } else {
+                values.flatMap { explore(depth-1, values, accu.plus(it)) }
             }
         }
     }
 
-    val initialSpace = input.flatMapIndexed{ y, line ->
-        line.mapIndexedNotNull { x, char ->
-            when (char) {
-                '#' -> Point3D(x, y, 0)
-                else -> null
+    fun initSpace(dimensions: Int):Set<HyperPoint> {
+        return  input.flatMapIndexed{ y, line ->
+            line.mapIndexedNotNull { x, char ->
+                val coords = mutableListOf<Int>(x, y)
+                (0 until dimensions-2).forEach{coords.add(0)}
+                when (char) {
+                    '#' -> HyperPoint(coords)
+                    else -> null
+                }
             }
-        }
-    }.toSet()
+        }.toSet()
+    }
 
-    fun Set<Point3D>.spaceToScan(): Set<Point3D> = this.flatMap { it.adjacent() }.toSet()
+    fun Set<HyperPoint>.spaceToScan(): Set<HyperPoint> = this.flatMap { it.adjacent() }.toSet()
 
-    fun solvePart1(): Int {
-        var activeSpace = initialSpace
+
+    fun solve(dimensions: Int): Int {
+        var activeSpace = initSpace(dimensions)
         for(step in 1 .. 6) {
-            val newActiveSpace = mutableSetOf<Point3D>()
+            val newActiveSpace = mutableSetOf<HyperPoint>()
             for(point in activeSpace.spaceToScan()) {
                 val occ = point.adjacent().count { activeSpace.contains(it) }
                 if(activeSpace.contains(point)) {
@@ -48,7 +64,8 @@ class Day17(input: List<String>) {
         }
         return activeSpace.size
     }
-    fun solvePart2(): Int {
-        TODO()
-    }
+
+    fun solvePart2() = solve(4)
+    fun solvePart1() = solve(3)
+
 }
