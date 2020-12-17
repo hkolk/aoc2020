@@ -70,15 +70,7 @@ class Day16(input: List<String>) {
         }
     }
 
-    fun solvePart1(): Int {
-        //println(tickets)
-        //println(validations)
-        var ret = 0
-        for(ticket in tickets) {
-            ret += validations.validate(ticket).second
-        }
-        return ret
-    }
+    fun solvePart1(): Int = tickets.map{ validations.validate(it).second }.sum()
 
     fun List<List<Int>>.print() {
         for(line in this) {
@@ -101,8 +93,6 @@ class Day16(input: List<String>) {
             Pair(index, validations.mapNotNull { if(it.match(field)) { it.name } else { null }})
         }.toMap()
 
-        //potentialIndices.forEach{println("${it.key}: ${it.value}")}
-
         for(i in 1 .. validations.size) {
             potentialIndices.filter { it.value.size == i }.forEach { (key, value) ->
                 value.forEach {
@@ -112,15 +102,7 @@ class Day16(input: List<String>) {
                 }
             }
         }
-        /*
-        indices.entries.associate{(k,v)-> v to k}.toSortedMap().forEach{println("${it.key} = ${it.value}")}
-        validations.filter { !indices.containsKey(it.name) }.forEach { missing ->
-            println("Missing: $missing.name")
-            potentialIndices.filter { potential -> potential.value.contains(missing.name) }.forEach{println("Potential $it")}
-        }
 
-        println(indices)
-        */
         return indices.keys.filter { it.startsWith(startsWith) }.map {
             myTicket[indices[it]!!]
         }.fold(1L) {acc, it -> acc * it}
