@@ -7,26 +7,8 @@ class Day18(val input: List<String>) {
     lateinit var precedence: Map<String, Int>
 
     fun solveExpression(input: String): Long {
-        val tokens = input.split(" ")
-        var operator = "+"
-        var result = 0L
-        for(token in tokens) {
-            when(token) {
-                "+", "-", "*", "/" -> operator = token
-                else -> when(operator) {
-                    "+" -> result += token.toLong()
-                    "-" -> result -= token.toLong()
-                    "*" -> result *= token.toLong()
-                    "/" -> result /= token.toLong()
-                }
-            }
-        }
-        //println("expression $input became $result")
-        return result
-    }
-
-    fun solveExpression2(input: String): Long {
-        val tokens = input.split(" ")
+        val tokens = input.replace("(", " ( ").replace(")", " ) ").split(" ").map { it.trim() }.filter { it.isNotEmpty() }
+        println(tokens)
         val rpn = mutableListOf<String>()
         val operatorStack = ArrayDeque<String>()
 
@@ -35,13 +17,24 @@ class Day18(val input: List<String>) {
                 token.toLongOrNull() != null -> rpn.add(token)
                 "+-*/".contains(token) -> {
                     while(operatorStack.isNotEmpty()) {
-                        if(precedence[operatorStack.last()]!! >= precedence[token]!!) {
+                        if(operatorStack.last() != "(" && precedence[operatorStack.last()]!! >= precedence[token]!!) {
                             rpn.add(operatorStack.removeLast())
                         } else {
                             break
                         }
                     }
                     operatorStack.add(token)
+                }
+                "(" == token -> {
+                    operatorStack.add(token)
+                }
+                ")" == token -> {
+                    while(operatorStack.last() != "(") {
+                        rpn.add(operatorStack.removeLast())
+                    }
+                    if(operatorStack.last() == "(") {
+                        operatorStack.removeLast()
+                    }
                 }
                 else -> throw IllegalArgumentException("Unknown token: $token")
             }
@@ -67,30 +60,12 @@ class Day18(val input: List<String>) {
 
     }
 
-    fun solve(input: String): Long {
-        val regex = Regex("""\(([^\(\)]*)\)""")
-        var simple = false
-        var simpleExpression = input
-        while(!simple) {
-            val result = regex.find(simpleExpression)
-            if (result != null) {
-                //println(result.value)
-                //println(result.groupValues)
-                simpleExpression = simpleExpression.replace(result.value, solveExpression2(result.groupValues[1]).toString())
-            } else {
-                simple = true
-            }
-        }
-        println("$input became $simpleExpression")
-        return solveExpression2(simpleExpression)
-    }
-
     fun solvePart1():Long {
         precedence = mapOf("+" to 0, "-" to 0, "*" to 0, "/" to 0)
-        return input.map { solve(it) }.sum()
+        return input.map { solveExpression(it) }.sum()
     }
     fun solvePart2():Long {
         precedence = mapOf("+" to 1, "-" to 0, "*" to 0, "/" to 0)
-        return input.map { solve(it) }.sum()
+        return input.map { solveExpression(it) }.sum()
     }
 }
