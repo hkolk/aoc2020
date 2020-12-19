@@ -3,20 +3,7 @@ package nl.hkolk.aoc2020
 import java.lang.IllegalArgumentException
 
 class Day16(input: List<String>) {
-    fun List<String>.splitBy(func: (String) -> Boolean): List<List<String>> {
-        val ret = mutableListOf<List<String>>()
-        var collect = mutableListOf<String>()
-        for(line in this) {
-            if(func(line)) {
-                ret.add(collect)
-                collect = mutableListOf()
-            } else {
-                collect.add(line)
-            }
-        }
-        if(collect.isNotEmpty()) ret.add(collect)
-        return ret
-    }
+
 
     data class Validation(val name: String, val ranges: List<IntRange>) {
         fun match(value: Int): Boolean {
