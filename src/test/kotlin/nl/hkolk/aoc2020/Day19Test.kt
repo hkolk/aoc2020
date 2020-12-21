@@ -10,6 +10,8 @@ class Day19Test {
 
     val testInput = Resources.resourceAsList("day19_test.txt")
     val testInputPart2 = Resources.resourceAsList("day19_test_part2.txt")
+    val testInputPart3 = Resources.resourceAsList("day19_test_part3.txt")
+
 
     val realInput = Resources.resourceAsList("day19.txt")
 
@@ -36,6 +38,11 @@ class Day19Test {
         fun `Matches Example`() {
             val answer = Day19(testInputPart2).solvePart2()
             Assertions.assertThat(answer).isEqualTo(12)
+        }
+        @Test
+        fun `Matches Example3`() {
+            val answer = Day19(testInputPart3).solvePart2()
+            Assertions.assertThat(answer).isEqualTo(1)
         }
         @Test
         fun `Actual Answer`() {

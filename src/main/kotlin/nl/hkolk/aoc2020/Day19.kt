@@ -4,16 +4,18 @@ class Day19(val input: List<String>) {
 
     sealed class Rule() {
         abstract val name: String
-        abstract fun match(input: String) : Pair<Boolean, String>
+        abstract fun match(input: String, prev: List<String>) : Pair<Boolean, String>
         abstract fun compile(): String
         data class StringRule(override val name: String, val charToMatch: Char) : Rule() {
-            override fun match(input: String): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
                 val cnt = getCount()
                 if(input.length > 0 && input[0] == charToMatch) {
-                    println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
+                    //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
+                    println(prev.joinToString(" -> "))
                     return Pair(true, input.drop(1))
                 } else {
-                    println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
+                    //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
+                    println(prev.joinToString(" -> "))
                     return Pair(false, input.drop(1))
                 }
             }
@@ -23,19 +25,19 @@ class Day19(val input: List<String>) {
             }
         }
         data class SequenceRule(override val name: String, val sequence: List<String>) : Rule() {
-            override fun match(input: String): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
                 val cnt = getCount()
                 var remainder = input
                 for(step in 0 until sequence.size) {
-                    val result = ALLRULES[sequence[step]]!!.match(remainder)
+                    val result = ALLRULES[sequence[step]]!!.match(remainder, prev + name)
                     if(!result.first) {
-                        println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
+                        //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
                         return Pair(false, result.second)
                     } else {
                         remainder = result.second
                     }
                 }
-                println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
+                //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
                 return Pair(true, remainder)
             }
 
@@ -44,15 +46,15 @@ class Day19(val input: List<String>) {
             }
         }
         data class OrRule(override val name: String, val left: String, val right: String) : Rule() {
-            override fun match(input: String): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
                 val cnt = getCount()
-                val res = ALLRULES[right]!!.match(input)
+                val res = ALLRULES[right]!!.match(input, prev + name)
                 return if(res.first) {
-                    println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: right")
+                    //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: right")
                     res
                 } else {
-                    println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: left")
-                    ALLRULES[left]!!.match(input)
+                    //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: left")
+                    ALLRULES[left]!!.match(input, prev + name)
                 }
             }
 
@@ -99,7 +101,7 @@ class Day19(val input: List<String>) {
         Rule.ALLRULES= parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
         println(Rule.ALLRULES["0"]!!.compile())
 
-        return parts[1].map { Rule.ALLRULES["0"]!!.match(it) }.count{ it.first && it.second.isEmpty() }
+        return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.first && it.second.isEmpty() }
     }
     fun solvePart2(): Int {
         val updatedInput = input.map {
@@ -113,6 +115,8 @@ class Day19(val input: List<String>) {
         }
         val parts = updatedInput.splitBy { it.isNullOrEmpty() }
         Rule.ALLRULES= parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
+        Rule.ALLRULES.forEach{println(it)}
+
         println(Rule.ALLRULES["42"]!!.compile())
         println(Rule.ALLRULES["31"]!!.compile())
 
@@ -120,8 +124,9 @@ class Day19(val input: List<String>) {
 
         for(message in parts[1]) {
             Rule.INPUTSIZE = message.length
-            println("$message == ${Rule.ALLRULES["0"]!!.match(message)}")
+            println("$message == ${Rule.ALLRULES["0"]!!.match(message, listOf())}")
         }
-        return parts[1].map { Rule.ALLRULES["0"]!!.match(it) }.count{ it.first && it.second.isEmpty() }
+        TODO()
+        //return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.first && it.second.isEmpty() }
     }
 }
