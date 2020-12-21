@@ -8,9 +8,13 @@ data class Point2D(val x:Int, val y:Int) {
         DIRECTIONS.map { yield(it(this@Point2D)) }
     }
 
+    fun flip(): Point2D = Point2D(-x, y)
+
     fun manhattan(): Int {
         return x.absoluteValue + y.absoluteValue
     }
+
+    fun move(direction: Point2D, times: Int=1): Point2D = move( { Point2D(it.x+direction.x, it.y + direction.y) })
 
     fun move(direction: (Point2D) -> Point2D, times: Int=1): Point2D {
         return direction.repeated(times).fold(this) { acc, func -> func(acc) }

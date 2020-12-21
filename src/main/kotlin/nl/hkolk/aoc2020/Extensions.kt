@@ -20,3 +20,7 @@ fun List<String>.splitBy(func: (String) -> Boolean): List<List<String>> {
     if(collect.isNotEmpty()) ret.add(collect)
     return ret
 }
+
+fun List<Number>.multiply(): Long = map { it.toLong() }.fold(1L) { acc, it -> acc * it }
+
+fun List<String>.rotate(): List<String> = (0 until first().length).map { x -> (size-1 downTo 0).map { this[it][x] }.joinToString("") }
