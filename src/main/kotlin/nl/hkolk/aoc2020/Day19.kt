@@ -4,19 +4,19 @@ class Day19(val input: List<String>) {
 
     sealed class Rule() {
         abstract val name: String
-        abstract fun match(input: String, prev: List<String>) : Pair<Boolean, String>
+        abstract fun match(input: String, prev: List<String>) : List<String>
         abstract fun compile(): String
         data class StringRule(override val name: String, val charToMatch: Char) : Rule() {
-            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): List<String> {
                 val cnt = getCount()
                 if(input.length > 0 && input[0] == charToMatch) {
                     //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
                     println(prev.joinToString(" -> "))
-                    return Pair(true, input.drop(1))
+                    return listOf(input.drop(1))
                 } else {
                     //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
                     println(prev.joinToString(" -> "))
-                    return Pair(false, input.drop(1))
+                    return listOf()
                 }
             }
 
@@ -25,20 +25,23 @@ class Day19(val input: List<String>) {
             }
         }
         data class SequenceRule(override val name: String, val sequence: List<String>) : Rule() {
-            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): List<String> {
                 val cnt = getCount()
                 var remainder = input
+                var valid = mutableListOf<String>()
+
                 for(step in 0 until sequence.size) {
                     val result = ALLRULES[sequence[step]]!!.match(remainder, prev + name)
-                    if(!result.first) {
+                    if(result.isEmpty()) {
                         //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
-                        return Pair(false, result.second)
+                        return listOf() // no matches all the way to the end
                     } else {
-                        remainder = result.second
+                        // explore all potential new paths
+                        return listOf()
                     }
                 }
                 //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: true")
-                return Pair(true, remainder)
+                return listOf()
             }
 
             override fun compile(): String {
@@ -46,10 +49,10 @@ class Day19(val input: List<String>) {
             }
         }
         data class OrRule(override val name: String, val left: String, val right: String) : Rule() {
-            override fun match(input: String, prev: List<String>): Pair<Boolean, String> {
+            override fun match(input: String, prev: List<String>): List<String> {
                 val cnt = getCount()
                 val res = ALLRULES[right]!!.match(input, prev + name)
-                return if(res.first) {
+                return if(res.isNotEmpty()) {
                     //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: right")
                     res
                 } else {
@@ -101,7 +104,7 @@ class Day19(val input: List<String>) {
         Rule.ALLRULES= parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
         println(Rule.ALLRULES["0"]!!.compile())
 
-        return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.first && it.second.isEmpty() }
+        return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.isEmpty()  }
     }
     fun solvePart2(): Int {
         val updatedInput = input.map {
