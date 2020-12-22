@@ -30,8 +30,11 @@ class Day19(val input: List<String>) {
                 var remainder = input
                 var valid = mutableListOf<String>()
 
+
                 for(step in 0 until sequence.size) {
                     val result = ALLRULES[sequence[step]]!!.match(remainder, prev + name)
+
+
                     if(result.isEmpty()) {
                         //println("$cnt ${" ".repeat(Rule.INPUTSIZE - input.length)}Applying $this on $input: false")
                         return listOf() // no matches all the way to the end
@@ -63,11 +66,11 @@ class Day19(val input: List<String>) {
 
             override fun compile(): String {
                 if(name=="8") {
-                    return "(" + ALLRULES["42"]!!.compile() + "("+ALLRULES[left]!!.compile()+")*" + ")"
+                    return "(" + ALLRULES["42"]!!.compile() + "(?:"+ALLRULES[left]!!.compile()+")*" + ")"
                 } else if(name=="11") {
-                    return "("+ALLRULES["42"]!!.compile() + "("+ALLRULES[left]!!.compile()+")*" + ALLRULES["31"]!!.compile() + ")"
+                    return "((?:"+ALLRULES["42"]!!.compile() + ")(?:"+ALLRULES[left]!!.compile()+")*(?:" + ALLRULES["31"]!!.compile() + "))"
                 } else {
-                    return "((" + ALLRULES[left]!!.compile() + ")|(" + ALLRULES[right]!!.compile() + "))"
+                    return "(?:(?:" + ALLRULES[left]!!.compile() + ")|(?:" + ALLRULES[right]!!.compile() + "))"
                 }
             }
         }
@@ -75,16 +78,20 @@ class Day19(val input: List<String>) {
         companion object {
             fun fromString(input: String) : List<Rule> {
                 val parts = input.split(",", " ", ":").filter { it.isNotEmpty() }
-                return if(parts[1].getOrNull(0) == '"') {
-                    listOf(StringRule(parts[0], parts[1].get(1)))
-                } else if(parts.contains("|")) {
-                    // piped = true
-                    val left = SequenceRule(parts[0]+"a", parts.subList(1,parts.indexOf("|")))
-                    val right = SequenceRule(parts[0]+"b", parts.subList(parts.indexOf("|")+1, parts.size))
-                    val or = OrRule(parts[0], left.name, right.name)
-                    listOf(left, right, or)
-                } else {
-                    listOf(SequenceRule(parts[0], parts.subList(1, parts.size)))
+                return when {
+                    parts[1].getOrNull(0) == '"' -> {
+                        listOf(StringRule(parts[0], parts[1].get(1)))
+                    }
+                    parts.contains("|") -> {
+                        // piped = true
+                        val left = SequenceRule(parts[0]+"a", parts.subList(1,parts.indexOf("|")))
+                        val right = SequenceRule(parts[0]+"b", parts.subList(parts.indexOf("|")+1, parts.size))
+                        val or = OrRule(parts[0], left.name, right.name)
+                        listOf(left, right, or)
+                    }
+                    else -> {
+                        listOf(SequenceRule(parts[0], parts.subList(1, parts.size)))
+                    }
                 }
             }
             var ALLRULES: Map<String, Rule> = mapOf()
