@@ -63,12 +63,14 @@ class Day19(val input: List<String>) {
                     ALLRULES[left]!!.match(input, prev + name)
                 }
             }
-
-            override fun compile(): String {
-                if(name=="8") {
-                    return "(" + ALLRULES["42"]!!.compile() + "(?:"+ALLRULES[left]!!.compile()+")*" + ")"
+            override fun compile(): String = compile(0)
+            fun compile(depth:Int): String {
+                if(depth > 10) {
+                    return "(?:(?:" + ALLRULES["42"]!!.compile() + ")(?:" + ALLRULES["31"]!!.compile() + "))?"
+                }else if(name=="8") {
+                    return "(?:" + ALLRULES["42"]!!.compile() +  "+)"
                 } else if(name=="11") {
-                    return "((?:"+ALLRULES["42"]!!.compile() + ")(?:"+ALLRULES[left]!!.compile()+")*(?:" + ALLRULES["31"]!!.compile() + "))"
+                    return "(?:(?:" + ALLRULES["42"]!!.compile() + ")(?:" + this.compile(depth+1) + ")?(?:" + ALLRULES["31"]!!.compile() + "))"
                 } else {
                     return "(?:(?:" + ALLRULES[left]!!.compile() + ")|(?:" + ALLRULES[right]!!.compile() + "))"
                 }
@@ -105,14 +107,16 @@ class Day19(val input: List<String>) {
         }
     }
 
-
-    fun solvePart1(): Int {
+    fun solve(input: List<String>): Int {
         val parts = input.splitBy { it.isNullOrEmpty() }
         Rule.ALLRULES= parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
-        println(Rule.ALLRULES["0"]!!.compile())
 
-        return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.isEmpty()  }
+        val regex = Regex("^"+Rule.ALLRULES["0"]!!.compile()+"$")
+        return parts[1].filter { regex.matches(it) }.count()
     }
+
+
+    fun solvePart1(): Int = solve(input)
     fun solvePart2(): Int {
         val updatedInput = input.map {
             if(it == "8: 42") {
@@ -123,20 +127,6 @@ class Day19(val input: List<String>) {
                 it
             }
         }
-        val parts = updatedInput.splitBy { it.isNullOrEmpty() }
-        Rule.ALLRULES= parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
-        Rule.ALLRULES.forEach{println(it)}
-
-        println(Rule.ALLRULES["42"]!!.compile())
-        println(Rule.ALLRULES["31"]!!.compile())
-
-        println(Rule.ALLRULES["0"]!!.compile())
-
-        for(message in parts[1]) {
-            Rule.INPUTSIZE = message.length
-            println("$message == ${Rule.ALLRULES["0"]!!.match(message, listOf())}")
-        }
-        TODO()
-        //return parts[1].map { Rule.ALLRULES["0"]!!.match(it, listOf()) }.count{ it.first && it.second.isEmpty() }
+        return solve(updatedInput)
     }
 }
