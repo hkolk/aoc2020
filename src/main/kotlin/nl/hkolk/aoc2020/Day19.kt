@@ -59,13 +59,13 @@ class Day19(val input: List<String>) {
     }
 
     private fun solve(input: List<String>): Int {
-        val parts = input.splitBy { it.isEmpty() }
+        val parts = input.splitBy { it.isNullOrEmpty() }
         Rule.ALLRULES = parts[0].flatMap { Rule.fromString(it) }.map { Pair(it.name, it) }.toMap()
 
         val regex = Regex("^"+Rule.ALLRULES["0"]!!.compile()+"$")
         return parts[1].filter { regex.matches(it) }.count()
     }
-    
+
     fun solvePart1(): Int = solve(input)
     fun solvePart2(): Int {
         val updatedInput = input.map {
