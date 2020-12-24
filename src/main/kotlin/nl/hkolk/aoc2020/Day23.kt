@@ -15,8 +15,14 @@ class Day23(val input: List<String>) {
             val aside = listOf(newDeck.removeAt(0), newDeck.removeAt(0), newDeck.removeAt(0))
             //println(" aside: $aside")
             //println(" deck after aside: $newDeck")
-            val droppoint = (cur-1 downTo 1).plus(9 downTo cur).fold(-1 ) {acc, value ->
-                if(acc > -1) acc else newDeck.indexOf(value)
+
+            var droppoint = -1
+            for( i in (cur-1 downTo 1).plus(9 downTo cur)) {
+                val idx = newDeck.indexOf(i)
+                if(idx != -1) {
+                    droppoint = idx
+                    break
+                }
             }
             //println(" droppoint: $droppoint (val: ${newDeck[droppoint]})")
             newDeck.addAll(droppoint+1, aside)
@@ -32,8 +38,10 @@ class Day23(val input: List<String>) {
     fun solvePart2(): String {
         var deck = input[0].map { char -> char.toString().toInt() }
         deck = deck + (10..1_000_000)
+        val seen = mapOf(deck.hashCode() to 0).toMutableMap()
 
-        for(round in 1 .. 1_000_000) {
+        for(round in 1 .. 10_000_000) {
+
             if(round % 1000 == 0)
             println("Round $round start: ${deck.size}")
             val newDeck = deck.toMutableList()
@@ -50,6 +58,11 @@ class Day23(val input: List<String>) {
             newDeck.add(cur)
             //println(" deck afer: $newDeck")
             deck = newDeck
+            if(seen.containsKey(deck.hashCode())) {
+                println("Round $round produced the same result as ${seen[deck.hashCode()]}")
+            } else {
+                seen[deck.hashCode()] = round
+            }
         }
         val idx = deck.indexOf(1)
         TODO()
